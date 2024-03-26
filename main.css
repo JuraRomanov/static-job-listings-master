@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap');
+
+
+* { 
+    box-sizing: border-box;
+}
+
+
+:root{ 
+    /* Colors */
+
+    --desaturated-dark-cyan : hsl(180, 29%, 50%); 
+    --ligth-grayish-cyan__bg : hsl(180, 52%, 96%) ;
+    --ligth-grayish-cyan__filter :hsl(180, 31%, 95%) ; 
+    --dark-grayish-cyan :hsl(180, 8%, 52%) ; 
+    --very-dark-grayish-cyan : hsl(180, 14%, 20%); 
+
+    /* Typography */
+
+    --fz-normal : 15px ; 
+    
+    --ff-league-spartan:"League Spartan", sans-serif;
+
+    --fw-normal : 500 ; 
+    --fw-bold  : 700 ; 
+
+}
+
+body{ 
+    margin: 0;
+
+}
+
+.static-job__box { 
+    width: 100%;
+    min-height: 100vh;
+
+    background: url(./images/bg-header-mobile.svg);
+    background-repeat: no-repeat;
+    background-position: top;
+    background-size: contain;
+    background-color: var(--ligth-grayish-cyan__bg);
+
+}
