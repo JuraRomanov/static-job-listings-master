@@ -62,7 +62,7 @@ class Job{
         </div>
 
         <div class="item__tags">
-            ${this.tags.map(tag => '<button class="tag" </button>')}   
+            ${this.tags.map(tag => `<button class="tag">${tag}</button>`).join("")}   
         </div>
       </div>
         `)
