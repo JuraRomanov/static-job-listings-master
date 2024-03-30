@@ -1,5 +1,6 @@
 let currentTags = []; 
-const dataForJobs = [] 
+const dataForJobs = [] ; 
+let filters ; 
 
 async function getDataFromJSON(url = '/data.json') { 
     const respone = await (await fetch(url)).json()
@@ -81,39 +82,79 @@ class Job{
     }
 }
 
+
+
+class TagsFilters { 
+
+    constructor(mainJobs , containter = ".filter__list") { 
+        this.currentTags = [] ; 
+
+        this.mainJobs = mainJobs  ;
+        this.jobs = mainJobs  ;
+
+        this.containter = containter ;
+
+        this.filterClear = document.querySelector('.filter__clear').addEventListener("click" , ()=> { 
+            this.currentTags = [] ; 
+            clearCont(this.containter , '.filter__item') ;
+
+            screenReloader(mainJobs) ; 
+
+
+        })
+    }
+
+    getTags() { 
+        return this.currentTags; 
+    }
+
+    addTags(newTag) {
+        this.currentTags.push(newTag);
+    }
+
+    removeTags(itemRemoved){ 
+        this.currentTags = this.currentTags.filter(tag => tag != itemRemoved.querySelector('.tag').innerHTML)
+        this.filterJob() ; 
+
+    }
+    filterJob(jobs = this.mainJobs) { 
+        this.jobs = jobs.filter( job => job.checkTags(this.currentTags)); 
+
+        this.jobs.map(job => job.createItem());
+        clearCont(this.containter , ".filter__item")
+        this.currentTags.map( tag => this.createFilter(tag)) ; 
+
+        screenReloader(this.jobs)
+        
+    }
+
+    createFilter(textTag){ 
+        document.querySelector(this.containter).insertAdjacentHTML("beforeEnd" , `
+            <div class="filter__item">
+                <button class="tag">${textTag}</button>
+                <img src="./images/icon-remove.svg" alt="X" class="filter__remove">
+            </div>
+        `)
+
+        const filterRemoves = document.querySelectorAll(".filter__remove") ;
+    
+        filterRemoves.forEach(remove => { 
+            remove.addEventListener('click',() => this.removeTags(remove.parentNode))
+        })
+    }
+
+
+} 
+
+
+
+
 const clearCont = (main = ".job__cont" , nameItem = ".job__item") => { 
    
     
     document.querySelectorAll(nameItem).forEach( (child) => {
         document.querySelector(main).removeChild(child)
     })
-}
-
-const filterTags = (jobs , currentTags , event ,  fitlerContainter = document.querySelector(".filter__list")    ) => { 
-    jobs = jobs.filter(job => job.checkTags(currentTags))
-    jobs.map(job => job.createItem()) ; 
-
-    
-
-    fitlerContainter.insertAdjacentHTML("beforeEnd" , `
-        <div class="filter__item">
-            <button class="tag">${event.target.innerHTML}</button>
-            <img src="./images/icon-remove.svg" alt="X" class="filter__remove">
-        </div>
-        `)
-    
-    const filterRemoves = fitlerContainter.querySelectorAll(".filter__remove") ;
-    
-    filterRemoves.forEach(remove => { 
-        remove.addEventListener('click',() => filterRemove(remove.parentNode))
-    })
-    
-    screenReloader(jobs)  ; 
-}
-
-const filterRemove = (removeBtn) => { 
-    // currentTags = currentTags.filter(item => item!=removeBtn.)
-    console.log(removeBtn)
 }
 const screenReloader = (jobs) =>  { 
 
@@ -124,32 +165,25 @@ const screenReloader = (jobs) =>  {
     const tags = document.querySelectorAll('.tag') ; 
     
     tags.forEach(tag => tag.addEventListener('click', () => { 
-        if(!currentTags.includes(tag.innerHTML)){ 
-            currentTags.push(tag.innerHTML)
+        if(!filters.getTags().includes(tag.innerHTML)){ 
+            filters.addTags(tag.innerHTML)
            
-            filterTags(jobs,currentTags , event)
+            filters.filterJob(jobs) ; 
         }
     }))
 
 }
 
-const clearFitler = (mainJobs) => { 
-    currentTags = [] ; 
-    clearCont('.filter__list' , '.filter__item') ;     
 
-    screenReloader(mainJobs) ; 
-
-}
 document.addEventListener("DOMContentLoaded" , getDataFromJSON().then(
     data => { 
         data.map(item => dataForJobs.push((item))) ; 
 
-        const jobs = dataForJobs.map(item => new Job (item))
-
-        const fitlerClear = document.querySelector('.filter__clear');
-        fitlerClear.addEventListener('click', () => clearFitler(jobs)) ; 
-
+        let jobs  = dataForJobs.map(item => new Job (item))
         
+       
+
+        filters = new TagsFilters(jobs)
         screenReloader(jobs)
 
     }
