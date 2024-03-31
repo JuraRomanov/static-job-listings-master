@@ -116,7 +116,7 @@ body{
 
     text-decoration: underline;
 }
-.job__filter--hiden{ 
+.job__filter--hidden{ 
     display: none;
 }
 
@@ -151,7 +151,7 @@ body{
 }
 
 .job__cont--filter { 
-    padding-top: calc(2rem * 4);
+
 }
 
 .job__item{ 

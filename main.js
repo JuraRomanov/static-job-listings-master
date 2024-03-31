@@ -88,7 +88,7 @@ class TagsFilters {
 
     constructor(mainJobs , containter = ".filter__list") { 
         this.currentTags = [] ; 
-
+        this.isActive = false ; 
         this.mainJobs = mainJobs  ;
         this.jobs = mainJobs  ;
 
@@ -96,7 +96,13 @@ class TagsFilters {
 
         this.filterClear = document.querySelector('.filter__clear').addEventListener("click" , ()=> { 
             this.currentTags = [] ; 
+            
+            
+            const jobBox = document.querySelector('.job__cont--filter')
+            jobBox.style  = `padding-top : 2rem`  
+
             clearCont(this.containter , '.filter__item') ;
+            this.changeView() ; 
 
             screenReloader(mainJobs) ; 
 
@@ -104,16 +110,48 @@ class TagsFilters {
         })
     }
 
+    changeView() { 
+        if(!this.isActive){ 
+            
+            
+            document.querySelector('.job__filter').classList.remove('job__filter--hidden') ; 
+            document.querySelector('.job__cont').classList.add('job__cont--filter') ; 
+            
+            
+            
+        }
+        else { 
+            document.querySelector('.job__filter').classList.add('job__filter--hidden') ; 
+            document.querySelector('.job__cont').classList.remove('job__cont--filter') ; 
+            
+        }
+        this.isActive = !this.isActive
+    }
+
     getTags() { 
         return this.currentTags; 
     }
 
     addTags(newTag) {
+        if(this.currentTags.length==0) { 
+            this.changeView() ; 
+        }
         this.currentTags.push(newTag);
+
+        
     }
 
     removeTags(itemRemoved){ 
+        
         this.currentTags = this.currentTags.filter(tag => tag != itemRemoved.querySelector('.tag').innerHTML)
+        
+
+        if(this.currentTags.length==0){ 
+            this.changeView(); 
+        }
+
+        
+        
         this.filterJob() ; 
 
     }
@@ -122,7 +160,19 @@ class TagsFilters {
 
         this.jobs.map(job => job.createItem());
         clearCont(this.containter , ".filter__item")
+
         this.currentTags.map( tag => this.createFilter(tag)) ; 
+
+       
+        const jobBox = document.querySelector('.job__cont--filter')
+        
+        jobBox.style  = `padding-top : ${(filters.getTags().length) * 3.5}rem`  
+
+        
+
+        
+
+        
 
         screenReloader(this.jobs)
         
